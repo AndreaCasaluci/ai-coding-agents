@@ -25,7 +25,8 @@ lessons/       16 modules, read in order
 mini_agent/    a toy agent harness you build up, one module at a time
 labs/          one runnable script per module
 capstone/      a real project that uses everything
-docs/          reference material, cheat sheets
+docs/          cheat sheet and reading list
+tests/         58 unit tests over the harness
 ```
 
 Every module has the same shape:
@@ -68,6 +69,7 @@ run the same code against a real model.
 1. Read [`CURRICULUM.md`](CURRICULUM.md) — the map.
 2. Open [`lessons/00-orientation.md`](lessons/00-orientation.md).
 3. Tick boxes in [`PROGRESS.md`](PROGRESS.md) as you go.
+4. Keep [`docs/cheatsheet.md`](docs/cheatsheet.md) open while you work.
 
 ## Ground rules
 
