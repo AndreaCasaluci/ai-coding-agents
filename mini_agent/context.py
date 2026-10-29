@@ -23,10 +23,17 @@ from .messages import Message
 
 
 def estimate_tokens(text: str) -> int:
-    """Crude but useful: ~4 chars per token for prose, fewer for code."""
+    """A cheap estimate that distinguishes prose from code.
+
+    Prose averages ~4 chars/token. Code and JSON spend extra tokens on
+    punctuation and indentation, so we add a surcharge for symbols. This is
+    still an estimate — never use it for billing, only for budgeting.
+    """
     if not text:
         return 0
-    return max(1, (len(text) + 3) // 4)
+    base = len(text) / 4
+    symbols = sum(1 for ch in text if not ch.isalnum() and not ch.isspace())
+    return max(1, int(base + symbols * 0.25))
 
 
 def message_tokens(m: Message) -> int:
@@ -96,7 +103,23 @@ class ContextBudget:
                 "user",
                 "[compacted earlier conversation — summary, not verbatim]\n" + summary,
             )
-            return system + [note] + kept
+            candidate = system + [note] + kept
+            # The summary itself costs tokens. If it does not fit either, drop
+            # older kept turns, then shrink the summary as a last resort.
+            while not self.fits(candidate) and len(kept) > 1:
+                kept = kept[1:]
+                while kept and kept[0].role != "user":
+                    kept = kept[1:]
+                candidate = system + [note] + kept
+            if not self.fits(candidate):
+                overflow = transcript_tokens(candidate) - self.usable
+                keep_chars = max(200, len(summary) - overflow * 4)
+                note = Message(
+                    "user",
+                    "[compacted earlier conversation — summary, not verbatim]\n" + summary[:keep_chars],
+                )
+                candidate = system + [note] + kept
+            return candidate
 
         note = Message("user", f"[{len(dropped)} earlier messages omitted to fit the context budget]")
         return system + [note] + kept

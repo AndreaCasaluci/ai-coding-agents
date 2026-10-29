@@ -52,9 +52,12 @@ python3 -m mini_agent --help
 python3 -m mini_agent "list the files and summarise the repo"
 
 # Run every lab and test
-make test
-make labs
+python3 run.py test
+python3 run.py labs
 ```
+
+`run.py` is a tiny stdlib runner so you do not need `make`. If you have it,
+`make test` / `make labs` do the same thing.
 
 The harness ships with a **scripted mock model** so everything works offline
 with zero API keys. Set `MINI_AGENT_PROVIDER=openai` and `OPENAI_API_KEY` to
