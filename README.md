@@ -46,7 +46,7 @@ a *readable* reference implementation of every concept in the lessons.
 ## Quickstart
 
 ```bash
-git clone <this-repo> && cd ai_coding_agents
+git clone https://github.com/AndreaCasaluci/coding-agents-course.git && cd coding-agents-course
 
 # No dependencies. Python 3.10+.
 python3 -m mini_agent --help
